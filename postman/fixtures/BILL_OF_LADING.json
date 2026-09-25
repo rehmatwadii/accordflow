@@ -1,0 +1,14 @@
+{
+  "issue_date": "2026-09-21",
+  "number": "SYN-BL-001",
+  "quantity": "100",
+  "quantity_unit": "MT",
+  "shipment_date": "2026-09-21",
+  "loading_port": "Singapore",
+  "discharge_port": "Port Qasim",
+  "consignee": "Atlas Textiles Limited",
+  "notify_party": "Atlas Textiles Limited",
+  "vessel": "MV Synthetic Horizon",
+  "partial_shipment": false,
+  "transshipment": false
+}

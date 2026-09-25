@@ -1,0 +1,20 @@
+.git
+.env
+.env.*
+.venv
+.demo-credentials.json
+data
+frontend/node_modules
+frontend/dist
+**/__pycache__
+docs/screenshots
+*.log
+postman/node_modules
+tmp
+output
+uploads
+backups
+*.pdf
+*.pem
+*.key
+LC-Verify Enterprise*.md

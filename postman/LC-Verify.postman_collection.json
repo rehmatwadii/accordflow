@@ -1,0 +1,889 @@
+{
+  "info": {
+    "name": "LC-Verify Enterprise",
+    "description": "Synthetic local-only API assurance. Run from repository root. Generate fixtures immediately before execution.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login as analyst",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\": \"analyst@lcverify.demo\", \"password\": \"{{demo_password}}\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));",
+              "pm.environment.set('access_token', pm.response.json().access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Current user",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/auth/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Role catalog",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/roles"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create synthetic case",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"title\": \"Newman synthetic import\", \"terms\": {\"applicant\": \"Atlas Textiles Limited\", \"beneficiary\": \"Straits Supply Limited\", \"applicant_country\": \"Pakistan\", \"beneficiary_country\": \"Singapore\", \"issuing_bank\": \"Meridian Demo Bank\", \"advising_bank\": \"Straits Synthetic Bank\", \"confirming_bank\": \"\", \"lc_type\": \"IMPORT\", \"currency\": \"USD\", \"amount\": \"125000\", \"tolerance_pct\": \"5\", \"tolerance_amount\": \"0\", \"issue_date\": \"2026-09-12\", \"expiry_date\": \"2026-10-24\", \"latest_shipment\": \"2026-09-22\", \"presentation_date\": \"2026-09-24\", \"presentation_period\": 21, \"loading_port\": \"Singapore\", \"discharge_port\": \"Port Qasim\", \"place_of_expiry\": \"Karachi\", \"incoterm\": \"FOB\", \"goods\": \"Premium woven cotton fabric\", \"quantity\": \"100\", \"quantity_unit\": \"MT\", \"unit_price\": \"1250\", \"payment_terms\": \"At sight\", \"partial_shipment\": false, \"transshipment\": false, \"required_documents\": [\"COMMERCIAL_INVOICE\", \"BILL_OF_LADING\", \"PACKING_LIST\", \"CERTIFICATE_OF_ORIGIN\"], \"special_conditions\": \"Synthetic demonstration only\", \"rule_profile\": \"STANDARD_IMPORT_LC\"}}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));",
+              "pm.environment.set('lc_id', pm.response.json().id); pm.environment.set('version', pm.response.json().version);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reject skipped approval",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}/workflow",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"action\": \"APPROVE\", \"version\": \"{{version}}\", \"reason\": \"Deliberate invalid transition regression\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 409', () => pm.response.to.have.status(409));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Upload COMMERCIAL_INVOICE",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}/documents",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "type",
+              "type": "text",
+              "value": "COMMERCIAL_INVOICE"
+            },
+            {
+              "key": "version",
+              "type": "text",
+              "value": "{{version}}"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "postman/fixtures/COMMERCIAL_INVOICE.json"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refresh case version",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));",
+              "pm.environment.set('version', pm.response.json().version);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Upload BILL_OF_LADING",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}/documents",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "type",
+              "type": "text",
+              "value": "BILL_OF_LADING"
+            },
+            {
+              "key": "version",
+              "type": "text",
+              "value": "{{version}}"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "postman/fixtures/BILL_OF_LADING.json"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refresh case version",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));",
+              "pm.environment.set('version', pm.response.json().version);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Upload PACKING_LIST",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}/documents",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "type",
+              "type": "text",
+              "value": "PACKING_LIST"
+            },
+            {
+              "key": "version",
+              "type": "text",
+              "value": "{{version}}"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "postman/fixtures/PACKING_LIST.json"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refresh case version",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));",
+              "pm.environment.set('version', pm.response.json().version);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Upload CERTIFICATE_OF_ORIGIN",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}/documents",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "type",
+              "type": "text",
+              "value": "CERTIFICATE_OF_ORIGIN"
+            },
+            {
+              "key": "version",
+              "type": "text",
+              "value": "{{version}}"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "postman/fixtures/CERTIFICATE_OF_ORIGIN.json"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Refresh case version",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));",
+              "pm.environment.set('version', pm.response.json().version);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Submit case",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}/workflow",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"action\": \"SUBMIT\", \"version\": \"{{version}}\", \"reason\": \"Synthetic Newman case submission\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Run deterministic validation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}/validation"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));",
+              "pm.environment.set('run_id', pm.response.json().id); pm.test('All checks pass or are inapplicable', () => pm.expect(pm.response.json().results.every(r => ['PASS','NOT_APPLICABLE'].includes(r.status))).to.equal(true));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Validation is idempotent",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}/validation"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));",
+              "pm.test('Same run ID', () => pm.expect(pm.response.json().id).to.equal(pm.environment.get('run_id')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "List discrepancies",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/discrepancies"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Add investigation note",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/lcs/{{lc_id}}/comments",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"body\": \"Synthetic API test note with documentary evidence reviewed.\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rules catalog",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/rules"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard metrics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/reports/dashboard"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Controlled export",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/reports/export?format=json"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Compliance report",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/reports/lcs/{{lc_id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/notifications"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Deny admin users to analyst",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/users"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 403', () => pm.response.to.have.status(403));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/auth/logout"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reject revoked access token",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/auth/me"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 401', () => pm.response.to.have.status(401));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Login as auditor",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\": \"auditor@lcverify.demo\", \"password\": \"{{demo_password}}\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));",
+              "pm.environment.set('access_token', pm.response.json().access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Audit explorer",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/audit"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Audit chain verification",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/audit/verify"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));",
+              "pm.test('Integrity PASS', () => pm.expect(pm.response.json().status).to.equal('PASS'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Logout auditor",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": "{{base_url}}/api/v1/auth/logout"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Expected status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Correlation ID present', () => pm.expect(pm.response.headers.get('X-Correlation-ID')).to.match(/^LCV-REQ-/));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

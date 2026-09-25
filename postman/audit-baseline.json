@@ -1,0 +1,7 @@
+{
+  "scope": "Newman local synthetic test tooling only; excluded from application runtime and frontend package",
+  "review_date": "2026-09-24",
+  "expires": "2026-10-24",
+  "allowed_advisory_ids": ["GHSA-qxc2-j82w-r537", "GHSA-8cw4-87c7-c6xx"],
+  "rationale": "Pinned upstream Newman relies on legacy Faker and callable csv-parse APIs. Only the trusted repository collection and generated JSON fixtures are executed. No untrusted collections, Faker templates, CSV input, remote targets or production credentials are allowed. Compatible overrides remove the other discovered advisories. New advisory IDs or an expired review fail the check."
+}

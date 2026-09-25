@@ -1,0 +1,15 @@
+{
+  "issue_date": "2026-09-21",
+  "number": "SYN-INV-001",
+  "amount": "125000",
+  "currency": "USD",
+  "quantity": "100",
+  "unit_price": "1250",
+  "quantity_unit": "MT",
+  "applicant": "Atlas Textiles Limited",
+  "beneficiary": "Straits Supply Limited",
+  "incoterm": "FOB",
+  "line_totals": [
+    "125000"
+  ]
+}

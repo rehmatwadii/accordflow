@@ -1,0 +1,16 @@
+{
+  "name": "lc-verify-api-test-tooling",
+  "private": true,
+  "description": "Isolated local synthetic Postman runner; never shipped with the application",
+  "devDependencies": {"newman": "6.2.2"},
+  "overrides": {
+    "handlebars": "^4.7.9",
+    "lodash": "^4.17.24",
+    "flatted": "^3.4.2",
+    "node-forge": "^1.4.0",
+    "qs": "^6.16.0",
+    "underscore": "^1.13.8",
+    "jose": "^4.15.9",
+    "uuid": "^11.1.1"
+  }
+}

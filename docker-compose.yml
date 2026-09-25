@@ -1,0 +1,56 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: lcverify
+      POSTGRES_USER: lcverify
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run scripts/configure.py first}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lcverify -d lcverify"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  backend:
+    build: .
+    environment:
+      APP_ENV: demo
+      OCR_SPACE_API_KEY: ${OCR_SPACE_API_KEY:-}
+      DATABASE_URL: postgresql+psycopg://lcverify:${POSTGRES_PASSWORD}@postgres:5432/lcverify
+      DEMO_PASSWORD: ${DEMO_PASSWORD:?Run scripts/configure.py first}
+      ALLOWED_ORIGINS: http://localhost:8080,http://127.0.0.1:8080,http://localhost:8000,http://127.0.0.1:8000
+    command: ["sh", "-c", "python -m alembic upgrade head && python -m scripts.seed && python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --no-access-log"]
+    ports: ["127.0.0.1:8001:8000"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/ready')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports: ["127.0.0.1:8080:8080"]
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+  worker:
+    build: .
+    environment:
+      APP_ENV: demo
+      DATABASE_URL: postgresql+psycopg://lcverify:${POSTGRES_PASSWORD}@postgres:5432/lcverify
+    command: ["python", "-m", "scripts.worker"]
+    depends_on:
+      backend:
+        condition: service_healthy
+volumes:
+  pgdata:
