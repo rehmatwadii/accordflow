@@ -27,7 +27,7 @@ def main():
                 "node",
                 "postman/node_modules/newman/bin/newman.js",
                 "run",
-                "postman/LC-Verify.postman_collection.json",
+                "postman/AccordFlow.postman_collection.json",
                 "-e",
                 str(env_path),
                 "--reporters",

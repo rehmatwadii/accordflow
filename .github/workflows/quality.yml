@@ -1,4 +1,4 @@
-name: LC-Verify quality gates
+name: AccordFlow quality gates
 on: [push, pull_request]
 permissions:
   contents: read

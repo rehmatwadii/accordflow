@@ -13,6 +13,6 @@ if (Test-Path -LiteralPath $pidFile) {
             }
         }
         Stop-Process -Id $serverPid -ErrorAction SilentlyContinue
-        Write-Output 'Local LC-Verify server stopped.'
-    } else { Write-Output 'Saved process is no longer the local LC-Verify server; no process stopped.' }
+        Write-Output 'Local AccordFlow server stopped.'
+    } else { Write-Output 'Saved process is no longer the local AccordFlow server; no process stopped.' }
 }

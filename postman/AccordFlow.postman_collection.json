@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "LC-Verify Enterprise",
+    "name": "AccordFlow",
     "description": "Synthetic local-only API assurance. Run from repository root. Generate fixtures immediately before execution.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },

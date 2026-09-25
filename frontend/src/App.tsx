@@ -150,7 +150,7 @@ export default function App() {
             <ShieldCheck size={27} />
           </span>
           <span>
-            LC-VERIFY<small>ENTERPRISE</small>
+            AccordFlow<small>TRADE ASSURANCE</small>
           </span>
         </a>
         <div className="workspace-switch">
@@ -350,7 +350,7 @@ export default function App() {
         </main>
         <footer className="app-footer">
           <span>
-            LC-Verify Enterprise <span>·</span> Intelligent trade assurance
+            AccordFlow <span>·</span> Intelligent trade assurance
           </span>
           <span>
             <ShieldCheck size={12} /> Synthetic data. Human decisions. Complete
@@ -394,7 +394,7 @@ function Login({ onLogin }: { onLogin: (user: User) => void }) {
             <ShieldCheck size={29} />
           </span>
           <span>
-            LC-VERIFY<small>ENTERPRISE</small>
+            AccordFlow<small>TRADE ASSURANCE</small>
           </span>
         </a>
         <div>

@@ -1,6 +1,6 @@
 # Portfolio narrative
 
-LC-Verify demonstrates a single coherent business journey rather than unrelated dashboard widgets: documentary evidence becomes deterministic findings, human review, independent approval and a reconstructable audit record.
+AccordFlow demonstrates a single coherent business journey rather than unrelated dashboard widgets: documentary evidence becomes deterministic findings, human review, independent approval and a reconstructable audit record.
 
 | Discipline | Demonstrated work | Useful demonstration |
 |---|---|---|

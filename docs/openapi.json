@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "LC-Verify Enterprise API",
+    "title": "AccordFlow API",
     "description": "Synthetic documentary-credit operations. No real banking data or regulatory certification.",
     "version": "1.0.0"
   },

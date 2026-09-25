@@ -1,10 +1,12 @@
-# LC-Verify Enterprise
+# AccordFlow
 
-**Intelligent Letter of Credit Documentation, Compliance & Trade-Finance Assurance Platform**
+**Trade Finance Document Verification**
+
+From document intake to confident decisions: OCR extraction, explainable checks, controlled approvals, and traceable audit records.
 
 > SYNTHETIC DEMONSTRATION DATA — NOT FOR REAL BANKING USE
 
-LC-Verify is a working full-stack portfolio demonstration of documentary-credit operations. An analyst creates a credit and uploads evidence; deterministic rules explain discrepancies; a reviewer investigates; an independent checker decides; the audit chain records what happened.
+AccordFlow is a working full-stack portfolio demonstration of documentary-credit operations. An analyst creates a credit and uploads evidence; deterministic rules explain discrepancies; a reviewer investigates; an independent checker decides; the audit chain records what happened.
 
 It is not a certified banking product. The original master prompt is the product vision; [implementation status](docs/IMPLEMENTATION_STATUS.md) distinguishes working features from the remaining scope.
 

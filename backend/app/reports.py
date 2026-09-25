@@ -129,7 +129,7 @@ def export(
     return Response(
         output.getvalue(),
         media_type="text/csv",
-        headers={"Content-Disposition": 'attachment; filename="lc-verify-cases.csv"'},
+        headers={"Content-Disposition": 'attachment; filename="accordflow-cases.csv"'},
     )
 
 
@@ -177,7 +177,7 @@ def compliance_report(
         parts.append(Paragraph(escape(str(value)), styles[style]))
         parts.append(Spacer(1, 7))
 
-    line("LC-VERIFY / COMPLIANCE REPORT", "Title")
+    line("ACCORDFLOW / COMPLIANCE REPORT", "Title")
     line(DISCLAIMER)
     line(f"{report['report_id']} · Generated {now().isoformat()} UTC")
     line(f"{lc.reference} — {lc.title}", "Heading1")
@@ -208,7 +208,7 @@ def compliance_report(
 
     def footer(canvas, doc):
         canvas.setFont("Helvetica", 8)
-        canvas.drawString(40, 25, f"LC-VERIFY | Synthetic demonstration | Page {doc.page}")
+        canvas.drawString(40, 25, f"ACCORDFLOW | Synthetic demonstration | Page {doc.page}")
 
     SimpleDocTemplate(stream, rightMargin=45, leftMargin=45, topMargin=40, bottomMargin=45).build(
         parts, onFirstPage=footer, onLaterPages=footer

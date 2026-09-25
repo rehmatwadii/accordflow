@@ -2,7 +2,7 @@
 
 ## Problem and outcomes
 
-Documentary-credit review is error prone when monetary terms, dates, shipment evidence and human decisions are scattered. LC-Verify brings these into one traceable synthetic case. Success means a reviewer can explain which term failed, which document caused the result, who decided what, and why the final checker was permitted to approve.
+Documentary-credit review is error prone when monetary terms, dates, shipment evidence and human decisions are scattered. AccordFlow brings these into one traceable synthetic case. Success means a reviewer can explain which term failed, which document caused the result, who decided what, and why the final checker was permitted to approve.
 
 Stakeholders: trade analysts, compliance reviewers, senior checkers, managers, auditors, executives, administrators, QA and security reviewers. The demo contains no real customers, accounts or confidential documents.
 

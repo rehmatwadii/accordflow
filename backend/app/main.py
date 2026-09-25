@@ -23,7 +23,7 @@ from .middleware import RequestBodyLimit
 from .security import require
 
 app = FastAPI(
-    title="LC-Verify Enterprise API",
+    title="AccordFlow API",
     version="1.0.0",
     description="Synthetic documentary-credit operations. No real banking data or regulatory certification.",
     docs_url="/api/docs",
@@ -166,7 +166,7 @@ async def http_error(request, exc):
 @app.get("/health/live", tags=["Health"])
 @app.get("/api/v1/health", tags=["Health"])
 def live():
-    return {"status": "UP", "service": "lc-verify", "environment": ENV}
+    return {"status": "UP", "service": "accordflow", "environment": ENV}
 
 
 @app.get("/health/ready", tags=["Health"])

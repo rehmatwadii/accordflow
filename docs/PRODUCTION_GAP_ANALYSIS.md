@@ -1,6 +1,6 @@
 # Production gap analysis
 
-LC-Verify is a sophisticated **synthetic portfolio demonstration**, not a certified, regulator-approved or bank-ready production system.
+AccordFlow is a sophisticated **synthetic portfolio demonstration**, not a certified, regulator-approved or bank-ready production system.
 
 ## Required before real banking use
 

@@ -31,6 +31,6 @@ for ($attempt = 0; $attempt -lt 20; $attempt++) {
     } catch { Start-Sleep -Milliseconds 300 }
 }
 if (-not $serviceReady) { throw 'Server did not become ready. Inspect data/server-error.log.' }
-Write-Output 'LC-Verify: http://127.0.0.1:8000'
+Write-Output 'AccordFlow: http://127.0.0.1:8000'
 Write-Output 'API docs: http://127.0.0.1:8000/api/docs'
 Write-Output 'Demo password: .demo-credentials.json (local file only)'

@@ -139,19 +139,19 @@ request(
 request("Logout auditor", "POST", "/auth/logout")
 collection = {
     "info": {
-        "name": "LC-Verify Enterprise",
+        "name": "AccordFlow",
         "description": "Synthetic local-only API assurance. Run from repository root. Generate fixtures immediately before execution.",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     },
     "item": items,
 }
-Path("postman/LC-Verify.postman_collection.json").write_text(
+Path("postman/AccordFlow.postman_collection.json").write_text(
     json.dumps(collection, indent=2), encoding="utf-8"
 )
-Path("postman/LC-Verify.postman_environment.json").write_text(
+Path("postman/AccordFlow.postman_environment.json").write_text(
     json.dumps(
         {
-            "name": "LC-Verify local synthetic demo",
+            "name": "AccordFlow local synthetic demo",
             "values": [
                 {"key": "base_url", "value": "http://127.0.0.1:8000", "enabled": True},
                 {"key": "demo_password", "value": "", "enabled": True, "type": "secret"},
