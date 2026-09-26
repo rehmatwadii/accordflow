@@ -43,4 +43,9 @@ output/
 .DS_Store
 Thumbs.db
 docs/screenshots/
+docs/images/*
+!docs/images/overview.png
+!docs/images/workbench.png
+!docs/images/validation.png
+!docs/images/audit.png
 LC-Verify Enterprise*.md

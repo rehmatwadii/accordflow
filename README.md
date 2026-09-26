@@ -10,7 +10,32 @@ AccordFlow is a working full-stack portfolio demonstration of documentary-credit
 
 It is not a certified banking product. The original master prompt is the product vision; [implementation status](docs/IMPLEMENTATION_STATUS.md) distinguishes working features from the remaining scope.
 
-Screenshots are generated locally by the browser tests and excluded from Git to avoid publishing document or account data.
+## Application preview
+
+Captured from the running app using a separate, freshly seeded demo database. All names, accounts, and trade records shown are synthetic; no uploaded private documents or credentials are included.
+
+**Operations overview** — portfolio metrics, case activity, risk distribution, and items requiring attention.
+
+![AccordFlow operations dashboard showing synthetic portfolio metrics and risk charts](docs/images/overview.png)
+
+<details>
+<summary>View the LC workbench, validation results, and audit explorer</summary>
+
+**LC workbench** — searchable cases with workflow status, risk scores, and SLA indicators.
+
+![AccordFlow LC workbench showing searchable synthetic cases and their review status](docs/images/workbench.png)
+
+**Document validation** — rule results, severity, evidence comparisons, and case risk.
+
+![AccordFlow validation screen showing document checks and discrepancy results](docs/images/validation.png)
+
+**Audit explorer** — approval records and an application-level audit integrity check.
+
+![AccordFlow audit explorer showing synthetic approval events and a passing integrity check](docs/images/audit.png)
+
+</details>
+
+Only these reviewed demo images in `docs/images/` are published. Routine screenshots in `docs/screenshots/` remain excluded from Git.
 
 ## Run locally on Windows
 

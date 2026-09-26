@@ -8,6 +8,7 @@ frontend/node_modules
 frontend/dist
 **/__pycache__
 docs/screenshots
+docs/images
 *.log
 postman/node_modules
 tmp

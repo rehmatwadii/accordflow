@@ -2,6 +2,8 @@
 
 Commit source, tests, dependency lockfiles, documentation and the blank `.env.example` only. Local `.env` variants, demo credentials, databases, uploaded PDFs, private keys, backups, screenshots, generated outputs, dependencies and the original build prompt are excluded. Keep document-specific regression expectations in an ignored local file; `LOCAL_PDF_MANIFEST` can point browser tests at that file.
 
+Four reviewed screenshots in `docs/images/` are explicitly allowed for the README. They were captured from an isolated synthetic demo database. Routine test screenshots remain ignored. Inspect every replacement image visually before publishing; the text scanner cannot detect secrets rendered inside pixels.
+
 The secret scanner checks Git-selected files for common credential formats and exact known secrets from local configuration. `--staged` scans the actual index bytes. It reports filenames only. These checks reduce risk but cannot identify every possible confidential value.
 
 Enable the repository's pre-commit protection after cloning:
